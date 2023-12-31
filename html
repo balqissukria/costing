@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Costing</title>
+
+    <style>
+        .new-row select {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 16px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .new-row input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 13px;
+
+        }
+
+        .new-row td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: justify;
+        }
+
+        /* Style for the select element and its options */
+        .new-row select {
+            appearance: none;
+            -webkit-appearance: none;
+            padding: 0px;
+            border: 0px solid #ddd;
+            background: transparent;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .new-row select:focus {
+            border-color: #fff;
+        }
+
+        .new-row select option {
+            background: #fff;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 80%;
+        }
+
+        .form-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #equipmentFormLeft,
+        #equipmentFormRight {
+            width: 45%;
+            /* Adjust the width as needed */
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        .signature-table {
+            border: none;
+            width: 100%;
+
+        }
+
+        .signature-table td {
+            border: none;
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+        }
+
+        .signature-input {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid black;
+            text-align: center;
+        }
+
+        .invisible-input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 13px;
+        }
+
+        .colored-cell {
+            background-color: rgba(240, 237, 237, 0.972);
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="kismec logo.jpeg" alt="Company Logo" style="max-width: 100%; height: auto;">
+
+        <div class="form-container">
+            <form id="equipmentFormLeft">
+                <!-- Fields for the left side of the form -->
+                <label for="course">Course:</label>
+                <input type="text" id="course" name="course" class="invisible-input" size="50"> <br>
+
+                <label for="duration">Duration:</label>
+                <input type="text" id="duration" name="duration" class="invisible-input"> <br>
+
+                <label for="industry">Industry:</label>
+                <input type="text" id="industry" name="industry" class="invisible-input"> <br>
+            </form>
+
+            <form id="equipmentFormRight">
+                <!-- Fields for the right side of the form -->
+                <label for="proposed_date">Proposed Date:</label>
+                <input type="text" id="proposed_date" name="proposed_date" class="invisible-input"> <br>
+
+                <label for="category">Category:</label>
+                <input type="text" id="category" name="category" class="invisible-input"> <br>
+
+                <label for="venue">Venue:</label>
+                <input type="text" id="venue" name="venue" class="invisible-input"> <br> <br>
+            </form>
+        </div>
+
+        <table border="1">
+            <tr>
+                <th></th>
+                <th>Manhours/Duration/Day</th>
+                <th>Rate per Manhours</th>
+                <th>Quantity</th>
+                <th>Fee/Pax</th>
+                <th>RM/Group</th>
+                <th>Remark</th>
+            </tr>
+            <tr>
+                <td>Income/Revenue</td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+            </tr>
+            <tr>
+                <td>Training Fees</td>
+                <td><input type="text" name="man_hours_training" min="0" oninput="calculateTraining();"
+                        class="invisible-input"></td>
+                <td><input type="text" name="rate_training" oninput="calculateTraining();" class="invisible-input"></td>
+                <td><input type="text" name="quantity_training" min="0" oninput="calculateTraining();"
+                        class="invisible-input"></td>
+                <td><input type="text" name="fee_pax_training" oninput="calculateTraining();" class="invisible-input">
+                </td>
+                <td><input type="text" name="rm_group_training" oninput="calculateTraining();" class="invisible-input">
+                </td>
+                <td><input type="text" name="remark_training" class="invisible-input"></td>
+            </tr>
+
+            <tr>
+                <td>Total Fee Charge</td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td><input type="text" name="total_fee_charge" oninput="calculateTraining();" disabled
+                        class="invisible-input"></td>
+                <td><input type="text" name="remark_total_fee_charge" class="invisible-input"></td>
+            </tr>
+            <tr>
+                <td>Expenses </td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+            </tr>
+            <tr>
+                <td name="consumable">Consumable</td>
+                <td><input type="text" name="man_hours_consumable" min="0" oninput="calculateConsumable()"
+                        class="invisible-input"></td>
+                <td><input type="text" name="rate_consumable" min="0.01" oninput="calculateConsumable()"
+                        class="invisible-input"></td>
+                <td><input type="text" name="quantity_consumable" min="0" oninput="calculateConsumable()"
+                        class="invisible-input"></td>
+                <td><input type="text" name="fee_pax_consumable" oninput="calculateConsumable()" disabled
+                        class="invisible-input"></td>
+                <td><input type="text" name="rm_group_consumable" oninput="calculateConsumable()" disabled
+                        class="invisible-input"></td>
+                <td><input type="text" name="remark_consumable" class="invisible-input"></td>
+            </tr>
+
+
+
+            <tr>
+                <td>Trainer Expenses</td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+            </tr>
+            <tr>
+                <td name="trainer">Trainer</td>
+                <td><input type="text" name="man_hours_trainers" min="0" oninput="calculateTrainers()"
+                        class="invisible-input"></td>
+                <td><input type="text" name="rate_trainers" step="0.01" min="0.01" oninput="calculateTrainers()"
+                        class="invisible-input">
+                </td>
+                <td><input type="text" name="quantity_trainers" min="0" oninput="calculateTrainers()"
+                        class="invisible-input"></td>
+                <td><input type="text" name="fee_pax_trainers" disabled class="invisible-input" oninput="calculateTrainers()"></td>
+                <td><input type="text" name="rm_group_trainers" disabled class="invisible-input" oninput="calculateTrainers()"></td>
+                <td><input type="text" name="remark_trainers" class="invisible-input"></td>
+            </tr>
+            <tr>
+                <td>Total Expenses</td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td><input type="text" name="fee_total_expenses" disabled class="invisible-input" ></td>
+                <td><input type="text" name="total_expenses_rm_group" class="invisible-input"></td>
+                <td class="colored-cell"></td>
+            </tr>
+            <tr>
+                <td>% Expenses</td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td><input type="text" name="percentage_expenses" disabled class="invisible-input"></td>
+                <td class="colored-cell"></td>
+
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+            </tr>
+            <tr>
+                <td>% Profit</td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td><input type="text" name="percentage_profit" disabled class="invisible-input">
+                </td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+            </tr>
+            <tr>
+                <td>Gross Profit</td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td class="colored-cell"></td>
+                <td><input type="text" name="gross_profitfee" disabled class="invisible-input"></td>
+                <td><input type="text" name="gross_profitrm" disabled class="invisible-input"></td>
+                <td class="colored-cell"></td>
+
+            </tr>
+
+            <script>
+                function addRowBelow(row) {
+                    var newRow = row.parentNode.insertRow(row.rowIndex + 1);
+                    newRow.className = "new-row"; // Add a class for styling the new row
+
+                    // Create a dropdown for the first cell
+                    var cell1 = newRow.insertCell(0);
+                    var select = document.createElement("select");
+                    select.innerHTML = '<option value="flight">Flight</option>' +
+                        '<option value="subsistence1">Subsistence 1</option>' +
+                        '<option value="subsistence2">Subsistence 2</option>' +
+                        '<option value="note">Note</option>' +
+                        '<option value="meals">Meals</option>' +
+                        '<option value="acc">Accommodation</option>' +
+                        '<option value="certification">Certification</option>' +
+                        '<option value="groundTransport">Ground Transport</option>';
+                    select.className = "invisible-input";
+                    cell1.appendChild(select);
+
+                    // Add input cells for the rest of the row based on the selected option
+                    for (var i = 1; i < row.cells.length; i++) {
+                        var cell = newRow.insertCell(i);
+                        var input = document.createElement("input");
+                        input.type = "text";
+                        input.className = "invisible-input";
+                        cell.appendChild(input);
+
+                        // Add input event listener to trigger the calculation for the "Note" option
+                        if (i === 1 || i === 2 || i === 3) {
+                            input.addEventListener('input', function () {
+                                calculateBasedOnDropdown(select, newRow);
+                            });
+                        }
+                    }
+                }
+
+                function calculateBasedOnDropdown(select, row) {
+                    var selectedOption = select.value;
+
+                    // Call the appropriate calculation function based on the selected option
+                    switch (selectedOption) {
+                        case "note":
+                            calculateNote(row);
+                            break;
+                        case "meals":
+                            calculateMeals(row);
+                            break;
+                        case "certification":
+                            calculateCertification(row);
+                            break;
+                        case "flight":
+                            calculateFlight(row);
+                            break;
+                        case "acc":
+                            calculateAccommodation(row); // Add this line for the "Accommodation" option
+                            break;
+
+                        case "subsistence1":
+                            calculateSubsistence(row, 'Subsistence 1'); // Pass label as argument
+                            break;
+                        case "subsistence2":
+                            calculateSubsistence(row, 'Subsistence 2'); // Pass label as argument
+                            break;
+
+                        default:
+                            // Handle other options if needed
+                            break;
+                    }
+                }
+                // Function to calculate Subsistence
+                function calculateSubsistence(row, label) {
+                    // Your calculation logic for Subsistence
+                    // Example: Retrieve input values and perform calculations
+                    var manHours = parseFloat(row.cells[1].querySelector("input").value) || 0;
+                    var rateInput = row.cells[2].querySelector("input");
+                    var quantityInput = row.cells[3].querySelector("input");
+                    var feePaxInput = row.cells[4].querySelector("input");
+                    var rmGroupInput = row.cells[5].querySelector("input");
+
+                    var calculatedFeePax = (manHours * rateInput.value * quantityInput.value) / quantityTraining;
+                    var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
+
+                    // Update the input fields
+                    feePaxInput.value = calculatedFeePax.toFixed(2);
+                    rmGroupInput.value = calculatedRmGroup.toFixed(2);
+
+                    // Update the label in the first cell
+                    row.cells[0].innerText = label;
+
+                    var trainingRow = findTrainingRow();
+
+                    if (trainingRow) {
+                        // Use the quantity_training from the "Training Fees" row for calculations
+                        var quantityTraining = parseFloat(trainingRow.cells[3].querySelector("input").value) || 1;
+
+                        // Perform calculations with the updated formula for fee_pax
+                        // Example: Calculate fee per pax and rm group for Accommodation
+                        var calculatedFeePax = (manHours * rateInput.value * quantityInput.value) / quantityTraining;
+                        var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
+
+                        // Update the input fields
+                        feePaxInput.value = calculatedFeePax.toFixed(2);
+                        rmGroupInput.value = calculatedRmGroup.toFixed(2);
+                    }
+                }
+                // Function to calculate Ground Transport
+                function calculateGroundTransport(row) {
+                    // Your calculation logic for Ground Transport
+                    // Example: Retrieve input values and perform calculations
+                    var manHours = parseFloat(row.cells[1].querySelector("input").value) || 0;
+                    var rateInput = row.cells[2].querySelector("input");
+                    var quantityInput = row.cells[3].querySelector("input");
+                    var feePaxInput = row.cells[4].querySelector("input");
+                    var rmGroupInput = row.cells[5].querySelector("input");
+
+                    var calculatedFeePax = (manHours * rateInput.value * quantityInput.value) / quantityTraining;
+                    var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
+
+                    // Update the input fields
+                    feePaxInput.value = calculatedFeePax.toFixed(2);
+                    rmGroupInput.value = calculatedRmGroup.toFixed(2);
+                    // Find the "Training Fees" row based on content
+                    var trainingRow = findTrainingRow();
+
+                    if (trainingRow) {
+                        // Use the quantity_training from the "Training Fees" row for calculations
+                        var quantityTraining = parseFloat(trainingRow.cells[3].querySelector("input").value) || 1;
+
+                        // Perform calculations with the updated formula for fee_pax
+                        // Example: Calculate fee per pax and rm group for Accommodation
+                        var calculatedFeePax = (manHours * rateInput.value * quantityInput.value) / quantityTraining;
+                        var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
+
+                        // Update the input fields
+                        feePaxInput.value = calculatedFeePax.toFixed(2);
+                        rmGroupInput.value = calculatedRmGroup.toFixed(2);
+                    }
+                    // Update the label in the first cell
+                    row.cells[0].innerText = 'Ground Transport';
+                }
+
+
+                function calculateAccommodation(row) {
+                    // Your calculation logic for the "Accommodation" option
+                    // Modify this function based on your specific requirements
+                    // Example: Retrieve input values and perform calculations
+                    var manHours = parseFloat(row.cells[1].querySelector("input").value) || 0;
+                    var rateInput = row.cells[2].querySelector("input");
+                    var quantityInput = row.cells[3].querySelector("input"); // Use quantity input for Accommodation
+                    var feePaxInput = row.cells[4].querySelector("input");
+                    var rmGroupInput = row.cells[5].querySelector("input");
+
+                    // Find the "Training Fees" row based on content
+                    var trainingRow = findTrainingRow();
+
+                    if (trainingRow) {
+                        // Use the quantity_training from the "Training Fees" row for calculations
+                        var quantityTraining = parseFloat(trainingRow.cells[3].querySelector("input").value) || 1;
+
+                        // Perform calculations with the updated formula for fee_pax
+                        // Example: Calculate fee per pax and rm group for Accommodation
+                        var calculatedFeePax = (manHours * rateInput.value * quantityInput.value) / quantityTraining;
+                        var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
+
+                        // Update the input fields
+                        feePaxInput.value = calculatedFeePax.toFixed(2);
+                        rmGroupInput.value = calculatedRmGroup.toFixed(2);
+                    }
+                }
+                function calculateFlight(row) {
+                    // Your calculation logic for the "Flight" option
+                    // Modify this function based on your specific requirements
+                    // Example: Retrieve input values and perform calculations
+                    var manHours = parseFloat(row.cells[1].querySelector("input").value) || 0;
+                    var rateInput = row.cells[2].querySelector("input");
+                    var quantityInput = row.cells[3].querySelector("input"); // Use quantity input for Flight
+                    var feePaxInput = row.cells[4].querySelector("input");
+                    var rmGroupInput = row.cells[5].querySelector("input");
+
+                    // Find the "Training Fees" row based on content
+                    var trainingRow = findTrainingRow();
+
+                    if (trainingRow) {
+                        // Use the quantity_training from the "Training Fees" row for calculations
+                        var quantityTraining = parseFloat(trainingRow.cells[3].querySelector("input").value) || 1;
+
+                        // Perform calculations with the updated formula for fee_pax
+                        // Example: Calculate fee per pax and rm group for Flight
+                        var calculatedFeePax = (manHours * rateInput.value * quantityInput.value) / quantityTraining;
+                        var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
+
+                        // Update the input fields
+                        feePaxInput.value = calculatedFeePax.toFixed(2);
+                        rmGroupInput.value = calculatedRmGroup.toFixed(2);
+                    }
+                }
+
+                function findTrainingRow() {
+                    // Find the "Training Fees" row based on content
+                    var rows = document.querySelectorAll('table tr');
+                    for (var i = 0; i < rows.length; i++) {
+                        var cells = rows[i].cells;
+                        if (cells.length >= 7 &&
+                            cells[0].innerText.trim().toLowerCase() === 'training fees' &&
+                            cells[1].querySelector("input[name='man_hours_training']")) {
+                            return rows[i];
+                        }
+                    }
+                    return null;
+                }
+
+                function calculateCertification(row) {
+                    // Your calculation logic for the "Certification" option
+                    // Modify this function based on your specific requirements
+                    // Example: Retrieve input values and perform calculations
+                    var manHours = parseFloat(row.cells[1].querySelector("input").value) || 0;
+                    var rateInput = row.cells[2].querySelector("input");
+                    var quantityInput = row.cells[3].querySelector("input");
+                    var feePaxInput = row.cells[4].querySelector("input");
+                    var rmGroupInput = row.cells[5].querySelector("input");
+
+                    // Perform calculations and update the input fields
+                    // Example: Calculate fee per pax and rm group for Certification
+                    var calculatedFeePax = manHours * rateInput.value;
+                    var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
+
+                    // Update the input fields
+                    feePaxInput.value = calculatedFeePax.toFixed(2);
+                    rmGroupInput.value = calculatedRmGroup.toFixed(2);
+                }
+                function calculateMeals(row) {
+                    // Your calculation logic for the "Meals" option
+                    // Modify this function based on your specific requirements
+                    // Example: Retrieve input values and perform calculations
+                    var manHours = parseFloat(row.cells[1].querySelector("input").value) || 0;
+                    var rateInput = row.cells[2].querySelector("input");
+                    var quantityInput = row.cells[3].querySelector("input");
+                    var feePaxInput = row.cells[4].querySelector("input");
+                    var rmGroupInput = row.cells[5].querySelector("input");
+
+                    // Perform calculations and update the input fields
+                    // Example: Calculate fee per pax and rm group for Meals
+                    var calculatedFeePax = manHours * rateInput.value;
+                    var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
+
+                    // Update the input fields
+                    feePaxInput.value = calculatedFeePax.toFixed(2);
+                    rmGroupInput.value = calculatedRmGroup.toFixed(2);
+                }
+
+                function calculateNote(row) {
+                    // Your calculation logic for the "Note" option
+                    // Modify this function based on your specific requirements
+                    // Example: Retrieve input values and perform calculations
+                    var manHours = parseFloat(row.cells[1].querySelector("input").value) || 0;
+                    var rateInput = row.cells[2].querySelector("input");
+                    var quantityInput = row.cells[3].querySelector("input");
+                    var feePaxInput = row.cells[4].querySelector("input");
+                    var rmGroupInput = row.cells[5].querySelector("input");
+
+                    // Perform calculations and update the input fields
+                    // Example: Calculate fee per pax and rm group
+                    var calculatedFeePax = manHours * rateInput.value;
+                    var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
+
+                    // Update the input fields
+                    feePaxInput.value = calculatedFeePax.toFixed(2);
+                    rmGroupInput.value = calculatedRmGroup.toFixed(2);
+                }
+
+                // Add event listener to each consumable row for right-click
+                var consumableRows = document.getElementsByName('consumable');
+                for (var i = 0; i < consumableRows.length; i++) {
+                    consumableRows[i].addEventListener('contextmenu', function (event) {
+                        event.preventDefault();
+                        var row = event.target.closest('tr');
+                        addRowBelow(row);
+                    });
+                }
+
+                function calculateFee(rowType) {
+    var row = document.getElementsByName("man_hours_" + rowType)[0].closest("tr");
+    var manHours = parseFloat(row.cells[1].querySelector("input").value) || 0;
+    var rateInput = row.cells[2].querySelector("input");
+    var quantityInput = row.cells[3].querySelector("input");
+    var feePaxInput = row.cells[4].querySelector("input");
+    var rmGroupInput = row.cells[5].querySelector("input");
+
+    // Find the "Training Fees" row based on content
+    var trainingRow = findTrainingRow();
+
+    if (trainingRow) {
+        // Use the quantity_training from the "Training Fees" row for calculations
+        var quantityTraining = parseFloat(trainingRow.cells[3].querySelector("input").value) || 1;
+
+        // Perform calculations with the updated formula for fee_pax
+        // Example: Calculate fee per pax and rm group for Trainers/Flight
+        var calculatedFeePax = (manHours * rateInput.value * quantityInput.value) / quantityTraining;
+        var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
+
+        // Update the input fields
+        feePaxInput.value = calculatedFeePax.toFixed(2);
+        rmGroupInput.value = calculatedRmGroup.toFixed(2);
+    }
+}
+
+    </script>
+
+            <table border="1" ,class="signature-table">
+                <tr>
+                    <br><br>
+                    <td>Prepared by:
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        .....................................<br>
+                        Mahadzir Mat Rabi <br>
+                        TD5 Manager <br>
+
+                    </td>
+
+
+                    <td>Checked by: <br>
+                        <br>
+                        <br>
+                        <br>
+                        .....................................<br>
+                        Rudy Musnandar <br>
+                        Asst. General Manager <br>
+                    </td>
+                    <td>Checked by:
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        .....................................<br>
+                        Zulkefli Johari <br>
+                        Senior Manager <br>
+                    </td>
+
+                    <td>Approved by:
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        .....................................<br>
+                        Mohd Yusuri Bin Yusof <br>
+                        Executive Director <br>
+                    </td>
+                </tr>
+            </table>
+    </div>
+    </form>
+    <script>
+        function calculateTraining() {
+            var manHours = parseFloat(document.getElementsByName("man_hours_training")[0].value) || 0;
+            var rateInput = document.getElementsByName("rate_training")[0];
+            var feePaxInput = document.getElementsByName("fee_pax_training")[0];
+            var rmGroupInput = document.getElementsByName("rm_group_training")[0];
+            var quantityInput = document.getElementsByName("quantity_training")[0];
+            var totalFeeChargeInput = document.getElementsByName("total_fee_charge")[0];
+
+            // If fee_pax and man hours are provided, calculate rate
+            if (feePaxInput.value > 0 && manHours > 0) {
+                var calculatedRate = feePaxInput.value / manHours;
+                rateInput.value = calculatedRate.toFixed(2);
+            }
+
+            // If rate and man hours are provided, calculate fee_pax
+            if (rateInput.value > 0 && manHours > 0) {
+                var calculatedFeePax = manHours * rateInput.value;
+                feePaxInput.value = calculatedFeePax.toFixed(2);
+            }
+            // If rate, quantity, and man hours are provided, calculate rm_group_training
+            if (rateInput.value > 0 && quantityInput.value > 0 && manHours > 0) {
+                var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
+                rmGroupInput.value = calculatedRmGroup.toFixed(2);
+                totalFeeChargeInput.value = rmGroupInput.value;
+            }
+
+
+        }
+       
+
+        function calculateConsumable() {
+            var manHours = parseFloat(document.getElementsByName("man_hours_consumable")[0].value) || 0;
+            var rateInput = document.getElementsByName("rate_consumable")[0];
+            var feePaxInput = document.getElementsByName("fee_pax_consumable")[0];
+            var rmGroupInput = document.getElementsByName("rm_group_consumable")[0];
+            var quantityInput = document.getElementsByName("quantity_consumable")[0];
+
+
+            // If fee_pax and man hours are provided, calculate rate
+            if (feePaxInput.value > 0 && manHours > 0) {
+                var calculatedRate = feePaxInput.value / manHours;
+                rateInput.value = calculatedRate.toFixed(2);
+            }
+
+            // If rate and man hours are provided, calculate fee_pax
+            if (rateInput.value > 0 && manHours > 0) {
+                var calculatedFeePax = manHours * rateInput.value;
+                feePaxInput.value = calculatedFeePax.toFixed(2);
+            }
+            // If rate, quantity, and man hours are provided, calculate rm_group_consumable
+            if (rateInput.value > 0 && quantityInput.value > 0 && manHours > 0) {
+                var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
+                rmGroupInput.value = calculatedRmGroup.toFixed(2);
+
+            }
+        }
+        function calculateTrainers() {
+        // Get input values
+        var manHours = parseFloat(document.getElementsByName("man_hours_trainers")[0].value) || 0;
+        var rate = parseFloat(document.getElementsByName("rate_trainers")[0].value) || 0;
+        var quantity = parseFloat(document.getElementsByName("quantity_trainers")[0].value) || 0;
+        var rmGroupInput = document.getElementsByName("rm_group_trainers")[0];
+        var feePaxInput = document.getElementsByName("fee_pax_trainers")[0];
+
+        // Find the "Training Fees" row based on content
+    var trainingRow = findTrainingRow();
+
+if (trainingRow) {
+    // Use the quantity_training from the "Training Fees" row for calculations
+    var quantityTraining = parseFloat(trainingRow.cells[3].querySelector("input").value) || 1;
+
+    // Perform calculations with the updated formula for fee_pax
+    // Example: Calculate fee per pax and rm group for Trainers/Flight
+    var calculatedFeePax = (manHours * rate* quantity) / quantityTraining;
+    var calculatedRmGroup = rate* quantity* manHours;
+
+    // Update the input fields
+    feePaxInput= calculatedFeePax.toFixed(2);
+    rmGroupInput= calculatedRmGroup.toFixed(2);
+}
+} 
+
+
+
+
+        const totalExpensesFee = Math.round(feeConsumable + feeNote + feeMeals + feeTrainer + feeCertification + feerow1 + feerow2 + feerow3);
+        const totalExpensesRMGroup = Math.round(rmConsumable + rmNote + rmMeals + rmTrainer + rmCertification + rmrow1 + rmrow2 + rmrow3);
+
+        // Calculate and update the total income or revenue for fees and RM/group
+        const totalIncomeFee = parseFloat(document.querySelector('[name="fee_pax_training"]').value) || 0;
+        const totalIncomeRM = parseFloat(document.querySelector('[name="rm_group_training"]').value) || 0;
+
+        // Calculate and update the total expenses
+        const totalExpenses = Math.round(totalExpensesFee);
+        const totalExpensesRM = Math.round(totalExpensesRMGroup);
+
+        // Calculate the percentage expenses
+        const percentageExpenses = (totalExpensesRM / totalIncomeRM) * 100;
+        // Calculate the percentage profit
+        const percentageProfit = 100 - percentageExpenses;
+
+        // Calculate the gross profit for fees and RM/group
+        const grossProfitFee = Math.round(totalIncomeFee - totalExpenses);
+        const grossProfitRM = Math.round(totalIncomeRM - totalExpensesRM);
+
+        // Update the "Gross Profit" fields for fees and RM/group
+        document.querySelector('[name="gross_profitfee"]').value = grossProfitFee.toFixed(2);
+        document.querySelector('[name="gross_profitrm"]').value = grossProfitRM.toFixed(2);
+
+        document.querySelector('[name="fee_total_expenses"]').value = totalExpensesFee.toFixed(2);
+        document.querySelector('[name="total_expenses_rm_group"]').value = totalExpensesRMGroup.toFixed(2);
+
+        document.querySelector('[name="percentage_expenses"]').value = percentageExpenses.toFixed(2) + '%';
+        document.querySelector('[name="percentage_profit"]').value = percentageProfit.toFixed(2) + '%';
+
+
+
+
+    </script>
+    </div>
+</body>
+
+</html>
