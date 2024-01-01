@@ -245,15 +245,17 @@
                 <td class="colored-cell"></td>
                 <td class="colored-cell"></td>
                 <td><input type="text" name="fee_total_expenses" disabled class="invisible-input"
-                    oninput="calculateTotalFeePax()"></td>
-                <td><input type="text" name="total_expenses_rm_group" class="invisible-input"></td>
+                        oninput="updateTotalFeePax()"></td>
+                <td><input type="text" name="total_expenses_rm_group" class="invisible-input"
+                        oninput="updateTotalFeePax()"></td>
                 <td class="colored-cell"></td>
             </tr>
             <tr>
                 <td>% Expenses</td>
                 <td class="colored-cell"></td>
                 <td class="colored-cell"></td>
-                <td><input type="text" name="percentage_expenses" disabled class="invisible-input"></td>
+                <td><input type="text" name="percentage_expenses" disabled class="invisible-input"
+                        oninput="updateTotalFeePax()"></td>
                 <td class="colored-cell"></td>
 
                 <td class="colored-cell"></td>
@@ -263,7 +265,8 @@
                 <td>% Profit</td>
                 <td class="colored-cell"></td>
                 <td class="colored-cell"></td>
-                <td><input type="text" name="percentage_profit" disabled class="invisible-input">
+                <td><input type="text" name="percentage_profit" disabled class="invisible-input"
+                        oninput="updateTotalFeePax()">
                 </td>
                 <td class="colored-cell"></td>
                 <td class="colored-cell"></td>
@@ -274,8 +277,8 @@
                 <td class="colored-cell"></td>
                 <td class="colored-cell"></td>
                 <td class="colored-cell"></td>
-                <td><input type="text" name="gross_profitfee" disabled class="invisible-input"></td>
-                <td><input type="text" name="gross_profitrm" disabled class="invisible-input"></td>
+                <td><input type="text" name="gross_profitfee" disabled class="invisible-input"  oninput="updateTotalFeePax()"></td>
+                <td><input type="text" name="gross_profitrm" disabled class="invisible-input"  oninput="updateTotalFeePax()"></td>
                 <td class="colored-cell"></td>
 
             </tr>
@@ -314,6 +317,8 @@
                             });
                         }
                     }
+
+
                 }
 
                 function calculateBasedOnDropdown(select, row) {
@@ -341,7 +346,10 @@
                             calculateSubsistence(row, 'Subsistence 1'); // Pass label as argument
                             break;
                         case "subsistence2":
-                            calculateSubsistence(row, 'Subsistence 2'); // Pass label as argument
+                            calculateSubsistence1(row, 'Subsistence 2'); // Pass label as argument
+                            break;
+                        case "groundTransport":
+                            calculateGroundTransport(row); // Pass label as argument
                             break;
 
                         default:
@@ -349,6 +357,29 @@
                             break;
                     }
                 }
+
+                var totalFeePaxCertification = 0;
+                var totalFeePaxSubsistence1 = 0;
+                var totalFeePaxSubsistence = 0;
+                var totalFeePaxMeals = 0;
+                var totalFeePaxNote = 0;
+                var totalFeePaxFlight = 0;
+                var totalFeePaxAcc = 0;
+                var totalFeePaxGround = 0;
+                var totalconsumable = 0;
+                var totalTrainer = 0;
+
+                var totalRMCertification = 0;
+                var totalRMSubsistence1 = 0;
+                var totalRMSubsistence = 0;
+                var totalRMMeals = 0;
+                var totalRMNote = 0;
+                var totalRMFlight = 0;
+                var totalRMAcc = 0;
+                var totalRMGround = 0;
+                var totalRMconsumable = 0;
+                var totalRMTrainer = 0;
+
                 // Function to calculate Subsistence
                 function calculateSubsistence(row, label) {
                     // Your calculation logic for Subsistence
@@ -384,6 +415,54 @@
                         feePaxInput.value = calculatedFeePax.toFixed(2);
                         rmGroupInput.value = calculatedRmGroup.toFixed(2);
                     }
+                    totalFeePaxSubsistence = parseFloat(feePaxInput.value) || 0;
+                    totalRMSubsistence = parseFloat(rmGroupInput.value) || 0;
+
+                    updateTotalFeePax();
+
+
+                }
+                // Function to calculate Subsistence
+                function calculateSubsistence1(row, label) {
+                    // Your calculation logic for Subsistence
+                    // Example: Retrieve input values and perform calculations
+                    var manHours = parseFloat(row.cells[1].querySelector("input").value) || 0;
+                    var rateInput = row.cells[2].querySelector("input");
+                    var quantityInput = row.cells[3].querySelector("input");
+                    var feePaxInput = row.cells[4].querySelector("input");
+                    var rmGroupInput = row.cells[5].querySelector("input");
+
+                    var calculatedFeePax = (manHours * rateInput.value * quantityInput.value) / quantityTraining;
+                    var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
+
+                    // Update the input fields
+                    feePaxInput.value = calculatedFeePax.toFixed(2);
+                    rmGroupInput.value = calculatedRmGroup.toFixed(2);
+
+                    // Update the label in the first cell
+                    row.cells[0].innerText = label;
+
+                    var trainingRow = findTrainingRow();
+
+                    if (trainingRow) {
+                        // Use the quantity_training from the "Training Fees" row for calculations
+                        var quantityTraining = parseFloat(trainingRow.cells[3].querySelector("input").value) || 1;
+
+                        // Perform calculations with the updated formula for fee_pax
+                        // Example: Calculate fee per pax and rm group for Accommodation
+                        var calculatedFeePax = (manHours * rateInput.value * quantityInput.value) / quantityTraining;
+                        var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
+
+                        // Update the input fields
+                        feePaxInput.value = calculatedFeePax.toFixed(2);
+                        rmGroupInput.value = calculatedRmGroup.toFixed(2);
+                    }
+                    totalFeePaxSubsistence1 = parseFloat(feePaxInput.value) || 0;
+                    totalRMSubsistence1 = parseFloat(rmGroupInput.value) || 0;
+
+                    updateTotalFeePax();
+
+
                 }
                 // Function to calculate Ground Transport
                 function calculateGroundTransport(row) {
@@ -417,8 +496,11 @@
                         feePaxInput.value = calculatedFeePax.toFixed(2);
                         rmGroupInput.value = calculatedRmGroup.toFixed(2);
                     }
-                    // Update the label in the first cell
-                    row.cells[0].innerText = 'Ground Transport';
+
+                    totalFeePaxGround = parseFloat(feePaxInput.value) || 0;
+                    totalRMGround = parseFloat(rmGroupInput.value) || 0;
+
+                    updateTotalFeePax();
                 }
 
 
@@ -447,7 +529,11 @@
                         // Update the input fields
                         feePaxInput.value = calculatedFeePax.toFixed(2);
                         rmGroupInput.value = calculatedRmGroup.toFixed(2);
+
                     }
+                    totalFeePaxAcc = parseFloat(feePaxInput.value) || 0;
+                    totalRMAcc = parseFloat(rmGroupInput.value) || 0;
+                    updateTotalFeePax();
                 }
                 function calculateFlight(row) {
                     // Your calculation logic for the "Flight" option
@@ -475,6 +561,12 @@
                         feePaxInput.value = calculatedFeePax.toFixed(2);
                         rmGroupInput.value = calculatedRmGroup.toFixed(2);
                     }
+                    // Add the feePaxInput value to the total for Flight
+                    totalFeePaxFlight = parseFloat(feePaxInput.value) || 0;
+                    totalRMFlight = parseFloat(rmGroupInput.value) || 0;
+                    updateTotalFeePax();
+
+
                 }
 
                 function findTrainingRow() {
@@ -509,6 +601,13 @@
                     // Update the input fields
                     feePaxInput.value = calculatedFeePax.toFixed(2);
                     rmGroupInput.value = calculatedRmGroup.toFixed(2);
+
+                    totalFeePaxCertification = parseFloat(feePaxInput.value) || 0;
+                    totalRMCertification = parseFloat(rmGroupInput.value) || 0;
+
+                    // Update the total fee for Pax field
+                    updateTotalFeePax();
+
                 }
                 function calculateMeals(row) {
                     // Your calculation logic for the "Meals" option
@@ -528,6 +627,12 @@
                     // Update the input fields
                     feePaxInput.value = calculatedFeePax.toFixed(2);
                     rmGroupInput.value = calculatedRmGroup.toFixed(2);
+
+                    totalFeePaxMeals = parseFloat(feePaxInput.value) || 0;
+                    totalRMMeals = parseFloat(rmGroupInput.value) || 0;
+
+                    // Update the total fee for Pax field
+                    updateTotalFeePax();
                 }
 
                 function calculateNote(row) {
@@ -548,6 +653,12 @@
                     // Update the input fields
                     feePaxInput.value = calculatedFeePax.toFixed(2);
                     rmGroupInput.value = calculatedRmGroup.toFixed(2);
+
+                    totalFeePaxNote = parseFloat(feePaxInput.value) || 0;
+                    totalRMNote = parseFloat(rmGroupInput.value) || 0;
+
+                    updateTotalFeePax()
+
                 }
 
                 // Add event listener to each consumable row for right-click
@@ -560,31 +671,8 @@
                     });
                 }
 
-                function calculateFee(rowType) {
-                    var row = document.getElementsByName("man_hours_" + rowType)[0].closest("tr");
-                    var manHours = parseFloat(row.cells[1].querySelector("input").value) || 0;
-                    var rateInput = row.cells[2].querySelector("input");
-                    var quantityInput = row.cells[3].querySelector("input");
-                    var feePaxInput = row.cells[4].querySelector("input");
-                    var rmGroupInput = row.cells[5].querySelector("input");
 
-                    // Find the "Training Fees" row based on content
-                    var trainingRow = findTrainingRow();
 
-                    if (trainingRow) {
-                        // Use the quantity_training from the "Training Fees" row for calculations
-                        var quantityTraining = parseFloat(trainingRow.cells[3].querySelector("input").value) || 1;
-
-                        // Perform calculations with the updated formula for fee_pax
-                        // Example: Calculate fee per pax and rm group for Trainers/Flight
-                        var calculatedFeePax = (manHours * rateInput.value * quantityInput.value) / quantityTraining;
-                        var calculatedRmGroup = rateInput.value * quantityInput.value * manHours;
-
-                        // Update the input fields
-                        feePaxInput.value = calculatedFeePax.toFixed(2);
-                        rmGroupInput.value = calculatedRmGroup.toFixed(2);
-                    }
-                }
                 function calculateTrainers() {
                     // Get input values
                     var manHours = parseFloat(document.getElementsByName("man_hours_trainers")[0].value) || 0;
@@ -609,42 +697,12 @@
                         feePaxInput.value = calculatedFeePax.toFixed(2);
                         rmGroupInput.value = calculatedRmGroup.toFixed(2);
                     }
+
+                    totalTrainer = parseFloat(feePaxInput.value) || 0;
+                    totalRMTrainer = parseFloat(rmGroupInput.value) || 0;
+
+                    updateTotalFeePax()
                 }
-
-                function calculateTotalFeePax() {
-                    console.log("calculateTotalFeePax function called");
-    // Calculate Consumable Fee Pax
-    var consumableFeePax = parseFloat(document.getElementsByName("fee_pax_consumable")[0].value) || 0;
-    console.log("consumableFeePax:", consumableFeePax);
-    // Calculate Trainers Fee Pax
-    var trainersFeePax = parseFloat(document.getElementsByName("fee_pax_trainers")[0].value) || 0;
-
-    // Calculate Fee Pax for Dropdown Rows
-    var dropdownFeePax = 0;
-    var dropdownRows = document.getElementsByClassName("dropdown-row");
-    for (var i = 0; i < dropdownRows.length; i++) {
-        var dropdownFeePaxCell = dropdownRows[i].cells[4].querySelector("input");
-        dropdownFeePax += parseFloat(dropdownFeePaxCell.value) || 0;
-    }
-
-    // Calculate Fee Pax for Added Rows
-    var addedRowsFeePax = 0;
-    var addedRows = document.getElementsByClassName("new-row");
-    for (var i = 0; i < addedRows.length; i++) {
-        var addedRowsFeePaxCell = addedRows[i].cells[4].querySelector("input");
-        addedRowsFeePax += parseFloat(addedRowsFeePaxCell.value) || 0;
-    }
-
-    // Calculate Total Fee Pax
-    var totalFeePax = consumableFeePax + trainersFeePax + dropdownFeePax + addedRowsFeePax;
-    console.log("totalFeePax:", totalFeePax);
-    // Update the total_fee_pax input
-    document.getElementsByName("fee_total_expenses")[0].value = totalFeePax.toFixed(2);
-}
-
-
-
-
 
 
             </script>
@@ -722,7 +780,7 @@
                 totalFeeChargeInput.value = rmGroupInput.value;
             }
 
-
+            updateTotalFeePax()
         }
 
 
@@ -751,42 +809,33 @@
                 rmGroupInput.value = calculatedRmGroup.toFixed(2);
 
             }
+            totalconsumable = parseFloat(feePaxInput.value) || 0;
+            totalRMconsumable = parseFloat(rmGroupInput.value) || 0;
+
+            updateTotalFeePax();
         }
 
+        function updateTotalFeePax() {
+            var totalIncomeFee = parseFloat(document.querySelector('[name="fee_pax_training"]').value) || 0;
+
+            var totalIncomeRM = parseFloat(document.querySelector('[name="rm_group_training"]').value) || 0;
+            // Calculate the total fee for Pax
+            var totalFeePax = totalFeePaxCertification + totalFeePaxSubsistence + totalFeePaxSubsistence1 + totalFeePaxMeals + totalFeePaxNote + totalFeePaxFlight + totalTrainer + totalconsumable + totalFeePaxAcc + totalFeePaxGround;
+            var totalRM = totalRMCertification + totalRMSubsistence + totalRMSubsistence1 + totalRMMeals + totalRMNote + totalRMFlight + totalRMTrainer + totalRMconsumable + totalRMAcc + totalRMGround;
+            var percentageExpenses = (totalRM / totalIncomeRM) * 100;
+            var percentageProfit = 100 - percentageExpenses;
+            var grossfee =  totalIncomeFee - totalFeePax;
+            var grossGroup = totalIncomeRM - totalRM;
+            // Update the total fee for Pax field
+            document.getElementsByName("fee_total_expenses")[0].value = totalFeePax.toFixed(2);
+            document.getElementsByName("total_expenses_rm_group")[0].value = totalRM.toFixed(2);
+            document.getElementsByName("percentage_expenses")[0].value = percentageExpenses.toFixed(2) + '%';
+            document.getElementsByName("percentage_profit")[0].value = percentageProfit.toFixed(2) + '%';
+            document.getElementsByName("gross_profitfee")[0].value = grossfee.toFixed(2) ;
+            document.getElementsByName("gross_profitrm")[0].value = grossGroup.toFixed(2) ;
 
 
-        const totalExpensesFee = Math.round(feeConsumable + feeNote + feeMeals + feeTrainer + feeCertification + feerow1 + feerow2 + feerow3);
-        const totalExpensesRMGroup = Math.round(rmConsumable + rmNote + rmMeals + rmTrainer + rmCertification + rmrow1 + rmrow2 + rmrow3);
-
-        // Calculate and update the total income or revenue for fees and RM/group
-        const totalIncomeFee = parseFloat(document.querySelector('[name="fee_pax_training"]').value) || 0;
-        const totalIncomeRM = parseFloat(document.querySelector('[name="rm_group_training"]').value) || 0;
-
-        // Calculate and update the total expenses
-        const totalExpenses = Math.round(totalExpensesFee);
-        const totalExpensesRM = Math.round(totalExpensesRMGroup);
-
-        // Calculate the percentage expenses
-        const percentageExpenses = (totalExpensesRM / totalIncomeRM) * 100;
-        // Calculate the percentage profit
-        const percentageProfit = 100 - percentageExpenses;
-
-        // Calculate the gross profit for fees and RM/group
-        const grossProfitFee = Math.round(totalIncomeFee - totalExpenses);
-        const grossProfitRM = Math.round(totalIncomeRM - totalExpensesRM);
-
-        // Update the "Gross Profit" fields for fees and RM/group
-        document.querySelector('[name="gross_profitfee"]').value = grossProfitFee.toFixed(2);
-        document.querySelector('[name="gross_profitrm"]').value = grossProfitRM.toFixed(2);
-
-        document.querySelector('[name="fee_total_expenses"]').value = totalExpensesFee.toFixed(2);
-        document.querySelector('[name="total_expenses_rm_group"]').value = totalExpensesRMGroup.toFixed(2);
-
-        document.querySelector('[name="percentage_expenses"]').value = percentageExpenses.toFixed(2) + '%';
-        document.querySelector('[name="percentage_profit"]').value = percentageProfit.toFixed(2) + '%';
-
-
-
+        }
 
     </script>
     </div>
